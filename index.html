@@ -6,8 +6,8 @@
 <body>
     <div class="comp-root">
         <div class="display-view">
-            <textarea id="input" type="text" class="input"></textarea>
-            <textarea id="output" type="text" class="input"></textarea>
+            <textarea id="input" type="text" class="input text-input"></textarea>
+            <textarea id="output" type="text" class="input text-input"></textarea>
             <select id="avail-fonts" class="input">
                 <option value="CipherFontA" data-line-height="0.75" data-font-size="3.5rem">Cipher Font A</option>
                 <option value="CipherFontB" data-line-height="0.75" data-font-size="3.5rem">Cipher Font B</option>
@@ -40,7 +40,6 @@
                 <button>L</button>
             </div>
             <div class="row-3">
-                <!-- <button class="normal-english">Shift</button> -->
                 <button>Z</button>
                 <button>X</button>
                 <button>C</button>
@@ -51,35 +50,58 @@
             </div>
             <div class="row-4">
                 <button class="space"> </button>
+                
+
+                
             </div>
         </div>
+        <div class="settings-label">
+            <input id="annoyingSounds" type="checkbox" checked/>
+            Annoying sounds
+        </div>
     </div>
+
+    <!--
+                      _
+                     | |
+                     | |
+                    _|_|_       javascript...
+                    /   \         disgusting...
+                   /  __ \     /  
+                  /  ( .) \   /
+                 /         \
+                / ___|><|_ _\
+               / __|__|_ _| _\
+              /__|___|__|__|__\
+                |   |    |  |
+                |  \|   \|  |
+              __|_____      |
+             ((
+    -->
     <script>
+        let arr = [25, 15, 21, 0, 7, 15, 4, 0, 4, 1, 13, 14, 0, 14, 5, 18, 4, 19]
         let input = document.getElementById('input')
         let output = document.getElementById('output')
+        let annoyingSoundsCheckbox = document.getElementById('annoyingSounds')
+        let useSound = localStorage.getItem('useSound') === 'true';
+        if (!localStorage.getItem('useSound')) {
+            useSound = true
+        }
+        annoyingSoundsCheckbox.checked = useSound
+        annoyingSoundsCheckbox.addEventListener('change', (e) => {
+            useSound = e.currentTarget.checked;
+            localStorage.setItem('useSound', useSound)
+        })
 
         let playKeyPress = () => {
-            let keypressAudio = new Audio("/content/keypress.mp3")
+            if (!useSound) return
+            let keypressAudio = new Audio("content/keypress.mp3")
             keypressAudio.play()
-        }
-
-        let swapCase = () => {
-            document.querySelectorAll('.keyboard button')
-                .forEach((e) => {
-                    if (e.textContent === 'Shift') return
-                    e.textContent = e.textContent
-                    if (e.textContent === e.textContent.toUpperCase()) {
-                        e.textContent = e.textContent.toLowerCase()
-                    } else {
-                        e.textContent = e.textContent.toUpperCase();
-                    }
-                })
         }
 
         document.getElementById("avail-fonts")
             .addEventListener("change", (x) => {
                 var fontSize = x.srcElement.options[x.srcElement.selectedIndex].getAttribute("data-font-size")
-                
                 var lineHeight = x.srcElement.options[x.srcElement.selectedIndex].getAttribute("data-line-height")
                 document.querySelectorAll('.keyboard button')
                     .forEach((e) => {
@@ -94,10 +116,6 @@
             .forEach((e) => {
                 e.addEventListener('click', (z) => {
                     playKeyPress();
-                    if (z.srcElement.textContent == 'Shift') {
-                        swapCase();
-                        return
-                    }
                     input.value += z.srcElement.textContent;
                     output.value += z.srcElement.textContent;
                 })
@@ -127,8 +145,6 @@
                 OnInput(x.srcElement)
             }, false);
         }
-
-
     </script>
 </body>
 
