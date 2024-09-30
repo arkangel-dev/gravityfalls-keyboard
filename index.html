@@ -1,0 +1,135 @@
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <title>Gravity Falls Keyboard</title>
+</head>
+<body>
+    <div class="comp-root">
+        <div class="display-view">
+            <textarea id="input" type="text" class="input"></textarea>
+            <textarea id="output" type="text" class="input"></textarea>
+            <select id="avail-fonts" class="input">
+                <option value="CipherFontA" data-line-height="0.75" data-font-size="3.5rem">Cipher Font A</option>
+                <option value="CipherFontB" data-line-height="0.75" data-font-size="3.5rem">Cipher Font B</option>
+                <option value="StrangeRunes" data-line-height="0.75" data-font-size="3rem">Strange Runes</option>
+                <option value="Theraprism" data-line-height="0.8" data-font-size="2rem">Theraprism</option>
+            </select>
+        </div>
+        <div class="keyboard">
+            <div class="row-1">
+                <button>Q</button>
+                <button>W</button>
+                <button>E</button>
+                <button>R</button>
+                <button>T</button>
+                <button>Y</button>
+                <button>U</button>
+                <button>I</button>
+                <button>O</button>
+                <button>P</button>
+            </div>
+            <div class="row-2">
+                <button>A</button>
+                <button>S</button>
+                <button>D</button>
+                <button>F</button>
+                <button>G</button>
+                <button>H</button>
+                <button>J</button>
+                <button>K</button>
+                <button>L</button>
+            </div>
+            <div class="row-3">
+                <!-- <button class="normal-english">Shift</button> -->
+                <button>Z</button>
+                <button>X</button>
+                <button>C</button>
+                <button>V</button>
+                <button>B</button>
+                <button>N</button>
+                <button>M</button>
+            </div>
+            <div class="row-4">
+                <button class="space"> </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        let input = document.getElementById('input')
+        let output = document.getElementById('output')
+
+        let playKeyPress = () => {
+            let keypressAudio = new Audio("/content/keypress.mp3")
+            keypressAudio.play()
+        }
+
+        let swapCase = () => {
+            document.querySelectorAll('.keyboard button')
+                .forEach((e) => {
+                    if (e.textContent === 'Shift') return
+                    e.textContent = e.textContent
+                    if (e.textContent === e.textContent.toUpperCase()) {
+                        e.textContent = e.textContent.toLowerCase()
+                    } else {
+                        e.textContent = e.textContent.toUpperCase();
+                    }
+                })
+        }
+
+        document.getElementById("avail-fonts")
+            .addEventListener("change", (x) => {
+                var fontSize = x.srcElement.options[x.srcElement.selectedIndex].getAttribute("data-font-size")
+                
+                var lineHeight = x.srcElement.options[x.srcElement.selectedIndex].getAttribute("data-line-height")
+                document.querySelectorAll('.keyboard button')
+                    .forEach((e) => {
+                        e.style.fontFamily = x.srcElement.value
+                        e.style.fontSize = fontSize
+                    });
+                output.style.fontFamily = x.srcElement.value
+                output.style.fontSize = fontSize
+                output.style.lineHeight = lineHeight
+            })
+        document.querySelectorAll('.keyboard button')
+            .forEach((e) => {
+                e.addEventListener('click', (z) => {
+                    playKeyPress();
+                    if (z.srcElement.textContent == 'Shift') {
+                        swapCase();
+                        return
+                    }
+                    input.value += z.srcElement.textContent;
+                    output.value += z.srcElement.textContent;
+                })
+            })
+
+        function OnInput(element) {
+            element.style.height = 'auto';
+            element.style.height = (element.scrollHeight) + "px";
+        }
+
+        input.addEventListener("input", (e) => {
+            playKeyPress();
+            OnInput(output);
+            output.value = e.srcElement.value
+        })
+
+        output.addEventListener("input", (e) => {
+            playKeyPress();
+            OnInput(input);
+            input.value = e.srcElement.value;
+        })
+
+        const tx = document.getElementsByTagName("textarea");
+        for (let i = 0; i < tx.length; i++) {
+            tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
+            tx[i].addEventListener("input", (x) => {
+                OnInput(x.srcElement)
+            }, false);
+        }
+
+
+    </script>
+</body>
+
+</html>

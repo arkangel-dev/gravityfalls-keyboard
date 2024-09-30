@@ -1,0 +1,120 @@
+@font-face {
+    font-family: CipherFontA;
+    src: url(fonts/CipherFontA.ttf);
+}
+
+@font-face {
+    font-family: CipherFontB;
+    src: url(fonts/CipherFontB.ttf);
+}
+
+@font-face {
+    font-family: StrangeRunes;
+    src: url(fonts/Strange\ Runes.ttf);
+}
+
+@font-face {
+    font-family: Theraprism;
+    src: url(fonts/Theraprism.ttf);
+}
+
+body {
+    background: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#input {
+    color: rgb(255, 96, 96);
+}
+
+#output {
+    font-family: CipherFontA;
+    font-size: 3.5rem;
+    color: rgb(146, 255, 96);
+    line-height: .75;
+}
+
+.backspace img {
+    width: 2rem;
+}
+
+
+.input {
+    font-size: 1.5rem;
+    border-radius: .5rem;
+    border: none;
+    background: #222;
+    color: #FFF;
+    padding: .5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.input:focus {
+    outline: none;
+}
+
+.display-view {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem
+}
+
+div[class^="row-"] {
+    display: flex;
+    gap: .75rem;
+}
+
+.row-2 {
+    margin-left: 2rem;
+}
+
+.row-3 {
+    margin-left: 3.5rem;
+}
+
+
+.row-4 {
+    margin-left: 10rem;
+}
+
+.space {
+    width: 20rem !important;
+}
+
+.keyboard {
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+}
+
+.keyboard button {
+    height: 4.5rem;
+    width: 4rem;
+    font-size: 3rem;
+    font-family: StrangeRunes;
+    border-radius: 1rem;
+    border:none;
+    outline:none;
+    background: rgb(167, 167, 167);
+}
+
+.keyboard button:hover {
+    background: rgb(139, 139, 139);
+}
+
+.display-view {
+    display: flex;
+    flex-direction: column;
+}
+
+.normal-english {
+    font-family: Arial, Helvetica, sans-serif !important;
+    width: fit-content !important;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    font-size: 1.25rem !important;
+}
