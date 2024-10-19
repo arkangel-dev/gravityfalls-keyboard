@@ -1,16 +1,19 @@
 <html>
+
 <head>
     <link rel="stylesheet" href="style.css">
     <title>Gravity Falls Keyboard</title>
+    <link rel="icon" type="image/png" href="./favicon.png" />
 </head>
+
 <body>
     <div class="comp-root">
         <div class="display-view">
             <textarea id="input" type="text" class="input text-input"></textarea>
             <textarea id="output" type="text" class="input text-input"></textarea>
             <select id="avail-fonts" class="input">
-                <option value="CipherFontA" data-line-height="0.75" data-font-size="3.5rem">Cipher Font A</option>
-                <option value="CipherFontB" data-line-height="0.75" data-font-size="3.5rem">Cipher Font B</option>
+                <option value="CipherFontA" data-line-height="0.75" data-font-size="3.5rem">Authors Substitution</option>
+                <option value="CipherFontB" data-line-height="0.75" data-font-size="3.5rem">Ciphers Substitution</option>
                 <option value="StrangeRunes" data-line-height="0.75" data-font-size="3rem">Strange Runes</option>
                 <option value="Theraprism" data-line-height="0.8" data-font-size="2rem">Theraprism</option>
             </select>
@@ -47,16 +50,14 @@
                 <button>B</button>
                 <button>N</button>
                 <button>M</button>
+                <button id="switchCipher" class="normal-button show">Swap Ciphers</button>
             </div>
             <div class="row-4">
                 <button class="space"> </button>
-                
-
-                
             </div>
         </div>
         <div class="settings-label">
-            <input id="annoyingSounds" type="checkbox" checked/>
+            <input id="annoyingSounds" type="checkbox" checked />
             Annoying sounds
         </div>
     </div>
@@ -84,6 +85,10 @@
         let output = document.getElementById('output')
         let annoyingSoundsCheckbox = document.getElementById('annoyingSounds')
         let useSound = localStorage.getItem('useSound') === 'true';
+        let switchButton = document.getElementById('switchCipher')
+        let keypressAudio = new Audio("content/keypress.mp3")
+        let fontPicker = document.getElementById("avail-fonts")
+
         if (!localStorage.getItem('useSound')) {
             useSound = true
         }
@@ -95,11 +100,10 @@
 
         let playKeyPress = () => {
             if (!useSound) return
-            let keypressAudio = new Audio("content/keypress.mp3")
             keypressAudio.play()
         }
 
-        document.getElementById("avail-fonts")
+        fontPicker
             .addEventListener("change", (x) => {
                 var fontSize = x.srcElement.options[x.srcElement.selectedIndex].getAttribute("data-font-size")
                 var lineHeight = x.srcElement.options[x.srcElement.selectedIndex].getAttribute("data-line-height")
@@ -111,9 +115,32 @@
                 output.style.fontFamily = x.srcElement.value
                 output.style.fontSize = fontSize
                 output.style.lineHeight = lineHeight
+
+                if (x.srcElement.value == "CipherFontA" || x.srcElement.value == "CipherFontB") {
+                    switchButton.classList.add("show")
+                } else {
+                    switchButton.classList.remove("show")
+                }
             })
+
+        switchButton.addEventListener('click', (e) => {
+            if (fontPicker.value == "CipherFontA") {
+                input.value = processString(input.value, true)
+                fontPicker.value = "CipherFontB"
+            } else {
+                input.value = processString(input.value, false)
+                fontPicker.value = "CipherFontA"
+            }
+            input.dispatchEvent(new Event('input'))
+            fontPicker.dispatchEvent(new Event('change'))
+            console.log(input.value)
+            console.log()
+        });
         document.querySelectorAll('.keyboard button')
             .forEach((e) => {
+                if (e.id == 'switchCipher') {
+                    return;
+                };
                 e.addEventListener('click', (z) => {
                     playKeyPress();
                     input.value += z.srcElement.textContent;
@@ -144,6 +171,49 @@
             tx[i].addEventListener("input", (x) => {
                 OnInput(x.srcElement)
             }, false);
+        }
+
+        function processString(str, flag) {
+            const replacements_a = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const replacements_b = "UJ?GSNDQA?ZIRWCO?XELY?HJF?";
+            let result = '';
+
+            for (let c of str) {
+                if (/[A-Za-z]/.test(c)) {
+                    const isUpperCase = c === c.toUpperCase();
+                    const c_upper = c.toUpperCase();
+
+                    if (flag) {
+                        const index = replacements_a.indexOf(c_upper);
+                        if (index !== -1) {
+                            const replacementChar = replacements_b[index];
+                            if (replacementChar === '?') {
+                                result += c;
+                            } else {
+                                result += isUpperCase ? replacementChar : replacementChar.toLowerCase();
+                            }
+                        } else {
+                            result += c;
+                        }
+                    } else {
+                        let found = false;
+                        for (let i = 0; i < replacements_b.length; i++) {
+                            if (replacements_b[i] === c_upper && replacements_b[i] !== '?') {
+                                const replacementChar = replacements_a[i];
+                                result += isUpperCase ? replacementChar : replacementChar.toLowerCase();
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            result += c;
+                        }
+                    }
+                } else {
+                    result += c;
+                }
+            }
+            return result;
         }
     </script>
 </body>
